@@ -2,18 +2,16 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import fasttext
 import re
-
-# --- Загружаем модель ---
+# ссылка на модель: https://disk.yandex.ru/d/ZUtqGu8FiaMT2w
 model = fasttext.load_model("best_fasttext_model.bin")
 
-# --- Создаём FastAPI приложение ---
 app = FastAPI(title="Tweet Sentiment Classifier")
 
-# --- Модель входных данных ---
+
 class InputText(BaseModel):
     text: str
 
-# --- Предобработка текста (аналог из ноутбука) ---
+# Предобработка текста
 def cleaner(documents):
     docs = []
     for doc in documents:
@@ -41,7 +39,6 @@ def cleaner(documents):
         docs.append(text.strip())
     return docs
 
-# --- Эндпоинт предсказания ---
 @app.post("/predict/")
 def predict(input_data: InputText):
     cleaned_text = cleaner([input_data.text])[0]
